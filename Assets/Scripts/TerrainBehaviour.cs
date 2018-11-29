@@ -17,9 +17,8 @@ public class TerrainBehaviour : MonoBehaviour {
 	private Vector2 posIA;
 	private Vector2 posMeteor;
 	private Vector2 frontPlayer;
-	private int rand;
-	private float radiusMeteor;
-	private GameObject[] meteors;
+	private float rand;
+	private MeteorBehavior[] meteors;
 	private float[,] originalHeights;
 	
 	void Start () {
@@ -27,27 +26,49 @@ public class TerrainBehaviour : MonoBehaviour {
 		hmWidth = terrain.terrainData.heightmapWidth;
 		hmHeight = terrain.terrainData.heightmapHeight;
 		originalHeights = terrain.terrainData.GetHeights(0, 0, hmWidth, hmHeight);
-
-		radiusMeteor = 2.0f;
-	
 	}
 	
 	void Update () {
-		meteors = GameObject.FindGameObjectsWithTag("Meteor");
-		direction = playerController.getDirection();
-		radiusPlayer = player.transform.localScale.x / 2;
-		radiusIA = IA.transform.localScale.x / 2;
-		posPlayer = toTerrainPos(player.transform.position);
-		posIA = toTerrainPos(IA.transform.position);
 
-		frontPlayer.x =  player.transform.position.x + direction.x * (radiusPlayer + 1);
-		frontPlayer.y = player.transform.position.z + direction.z * (radiusPlayer + 1);
-		frontPlayer = toTerrainPos(new Vector3(frontPlayer.x, 0, frontPlayer.y));
-	
-		setMapHeights();
+		// On récupère les différentes données nécessaires à la boucle d'Update
+		getData();
+
+		// On récupère le point devant le joueur dans le repère du terrain
+		getFrontPlayer();
+		
+		// On met à jour la hauteur du terrain
+		updateMapHeights();
 	}
 
-	Vector3 toTerrainPos(Vector3 pos){
+	void getData() {
+
+		// On référencie les météores (A enlver plus tard)
+		meteors = GameObject.FindObjectsOfType<MeteorBehavior>();
+
+		// Les rayons du joueur et de l'IA
+		radiusPlayer = player.transform.localScale.x / 2;
+		radiusIA = IA.transform.localScale.x / 2;
+
+		// Les positions du joueur et de l'IA
+		posPlayer = toTerrainPos(player.transform.position);
+		posIA = toTerrainPos(IA.transform.position);
+	}
+
+	void getFrontPlayer() {
+
+		// On récupère la direction dans laquelle va le joueur
+		direction = playerController.getDirection();
+
+		// Et on calcule le devant du joueur en fonction de cette direction
+		frontPlayer.x =  player.transform.position.x + direction.x * (radiusPlayer + 1);
+		frontPlayer.y = player.transform.position.z + direction.z * (radiusPlayer + 1);
+
+		// Que l'on reconverti en coordonnées dans le repère du terrain
+		frontPlayer = toTerrainPos(new Vector3(frontPlayer.x, 0, frontPlayer.y));
+	}
+
+	Vector3 toTerrainPos(Vector3 pos) {
+
 		// get the normalized position of the player relative to the terrain
 		Vector3 tempCoord = (pos - terrain.gameObject.transform.position);
 		Vector3 coord;
@@ -61,21 +82,21 @@ public class TerrainBehaviour : MonoBehaviour {
 		return pos;
 	}
 
-	void setMapHeights(){
+	void updateMapHeights() {
 		// get the heights of the terrain under this game object
 		float[,] heights = terrain.terrainData.GetHeights(0 , 0, hmWidth, hmHeight);
 
-		rand = 1;
-		// we set each sample of the terrain in the size to the desired height
+		rand = 1f;
+		// we set each sample of the terrain in the size of the desired height
 		for (int i=0; i < hmWidth; i++){
 			for (int j=0; j < hmHeight; j++){
-				rand = Random.Range(1,10);
+				rand = Random.Range(1f,10f);
 				heights[i,j] += Time.deltaTime / 50 / rand;
-				if (j == frontPlayer.x && i == frontPlayer.y){
-						player.transform.localScale += new Vector3(1,1,1) * heights[i,j] / 30 ;
-						Vector3 position = new Vector3(player.transform.position.x, player.transform.localScale.y / 2, player.transform.position.z);
-						player.transform.position = position;
-					}
+				if (j == frontPlayer.x && i == frontPlayer.y) {
+					player.transform.localScale += new Vector3(1,1,1) * heights[i,j] / 30;
+					Vector3 position = new Vector3(player.transform.position.x, player.transform.localScale.y / 2, player.transform.position.z);
+					player.transform.position = position;
+				}
 				if (Mathf.Pow(j-posPlayer.x,2) + Mathf.Pow(i-posPlayer.y,2) < Mathf.Pow(radiusPlayer/100*257,2)){
 					heights[i,j] = heights[i,j] / 2; 
 				}
@@ -88,27 +109,24 @@ public class TerrainBehaviour : MonoBehaviour {
 		}
 		for (int i=0; i<meteors.Length; i++)
 			meteorBehaviour(meteors[i], ref heights);
+		
 		// set the new height
-		terrain.terrainData.SetHeights(0, 0, heights);
+		terrain.terrainData.SetHeightsDelayLOD(0, 0, heights);
 	}
 
-	void meteorBehaviour(GameObject meteor, ref float[,] heights){
-		posMeteor = toTerrainPos(meteor.transform.position);
-		float radius = Mathf.Pow(radiusMeteor/100*257,2);
-		for (int i=0; i < hmWidth; i++){
-			for (int j=0; j < hmHeight; j++){
-				if (Mathf.Pow(j-posMeteor.x,2) + Mathf.Pow(i-posMeteor.y,2) < radius)
-					heights[i,j] -= Time.deltaTime / 25 ;
-				if (heights[i,j] < 0)
-					heights[i,j] = 0;
-			}
+	void meteorBehaviour(MeteorBehavior meteor, ref float[,] heights) {
+		
+		// La neige autour du météore fond
+		foreach (Vector2 pos in meteor.listPos) {
+			heights[(int) pos.x, (int) pos.y] -= Time.deltaTime / 20 ;
+			if (heights[(int) pos.x, (int) pos.y] < 0)
+				heights[(int) pos.x, (int) pos.y] = 0;
 		}
-		if (Mathf.Pow(posPlayer.x-posMeteor.x,2) + Mathf.Pow(posPlayer.y-posMeteor.y,2) < radius + 50)
-			player.transform.localScale -= new Vector3(1,1,1) * 0.02f;
+				
 	}
 
 	void OnDestroy()
-         {
-             terrain.terrainData.SetHeights(0, 0, originalHeights);
-         }
+		{
+			terrain.terrainData.SetHeights(0, 0, originalHeights);
+		}
 }
