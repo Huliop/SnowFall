@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TerrainBehaviour : MonoBehaviour {
 	
@@ -13,16 +14,19 @@ public class TerrainBehaviour : MonoBehaviour {
 	private float radiusIA;
 	private Vector3 direction;
 	private PlayerController playerController;
+	private IAController AIController;
 	private Vector2 posPlayer;
 	private Vector2 posIA;
 	private Vector2 posMeteor;
 	private Vector2 frontPlayer;
+	private Vector2 frontAI;
 	private float rand;
 	private MeteorBehavior[] meteors;
 	private float[,] originalHeights;
 	
 	void Start () {
 		playerController = player.GetComponent<PlayerController>();
+		AIController = IA.GetComponent<IAController>();
 		hmWidth = terrain.terrainData.heightmapWidth;
 		hmHeight = terrain.terrainData.heightmapHeight;
 		originalHeights = terrain.terrainData.GetHeights(0, 0, hmWidth, hmHeight);
@@ -38,6 +42,8 @@ public class TerrainBehaviour : MonoBehaviour {
 		
 		// On met à jour la hauteur du terrain
 		updateMapHeights();
+
+		updateText();
 	}
 
 	void getData() {
@@ -67,6 +73,18 @@ public class TerrainBehaviour : MonoBehaviour {
 		frontPlayer = toTerrainPos(new Vector3(frontPlayer.x, 0, frontPlayer.y));
 	}
 
+	void getFrontAI() {
+		// On récupère la direction dans laquelle va l'IA
+		direction = AIController.getDirection();
+
+		// Et on calcule le devant de l'IA en fonction de cette direction
+		frontAI.x =  IA.transform.position.x + direction.x * (radiusIA + 1);
+		frontAI.y = IA.transform.position.z + direction.z * (radiusIA + 1);
+
+		// Que l'on reconverti en coordonnées dans le repère du terrain
+		frontAI = toTerrainPos(new Vector3(frontAI.x, 0, frontAI.y));
+	}
+
 	Vector3 toTerrainPos(Vector3 pos) {
 
 		// get the normalized position of the player relative to the terrain
@@ -92,17 +110,28 @@ public class TerrainBehaviour : MonoBehaviour {
 			for (int j=0; j < hmHeight; j++){
 				rand = Random.Range(1f,10f);
 				heights[i,j] += Time.deltaTime / 50 / rand;
+
+				// Si la position devant nous est celle de devant le joueur on grossit en fonction de la hauteur de neige
 				if (j == frontPlayer.x && i == frontPlayer.y) {
 					player.transform.localScale += new Vector3(1,1,1) * heights[i,j] / 30;
 					Vector3 position = new Vector3(player.transform.position.x, player.transform.localScale.y / 2, player.transform.position.z);
 					player.transform.position = position;
 				}
-				if (Mathf.Pow(j-posPlayer.x,2) + Mathf.Pow(i-posPlayer.y,2) < Mathf.Pow(radiusPlayer/100*257,2)){
+
+				// Si la position devant nous est celle de devant l'IA on grossit en fonction de la hauteur de neige
+				if (j == frontAI.x && i == frontAI.y) {
+					IA.transform.localScale += new Vector3(1,1,1) * heights[i,j] / 30;
+					Vector3 position = new Vector3(IA.transform.position.x, IA.transform.localScale.y / 2, IA.transform.position.z);
+					IA.transform.position = position;
+				}
+
+				// On diminiue la hauteur de neige en dessous de la boule du joueur
+				if (Mathf.Pow(j-posPlayer.x,2) + Mathf.Pow(i-posPlayer.y,2) < Mathf.Pow(radiusPlayer/100*257,2)) {
 					heights[i,j] = heights[i,j] / 2; 
 				}
-				if (Mathf.Pow(j-posIA.x,2) + Mathf.Pow(i-posIA.y,2) < Mathf.Pow(radiusIA/100*257,2)){
-					if (j == posIA.x && i == posIA.y)
-						IA.transform.localScale += new Vector3(1,1,1) * heights[i,j] / 30;
+
+				// On diminiue la hauteur de neige en dessous de la boule de l'IA
+				if (Mathf.Pow(j-posIA.x,2) + Mathf.Pow(i-posIA.y,2) < Mathf.Pow(radiusIA/100*257,2)) {
 					heights[i,j] = heights[i,j] / 2;	 
 				}
 			}
@@ -123,6 +152,17 @@ public class TerrainBehaviour : MonoBehaviour {
 				heights[(int) pos.x, (int) pos.y] = 0;
 		}
 				
+	}
+
+	void updateText() {
+		GameObject playerTextObj = GameObject.FindGameObjectWithTag("sizePlayer");
+		GameObject AITextObj = GameObject.FindGameObjectWithTag("sizeAI");
+
+		Text playerText = playerTextObj.GetComponent<Text>();
+		Text AIText = AITextObj.GetComponent<Text>();
+
+		playerText.text = "Player size : " + player.transform.localScale.x;
+		AIText.text = "AI size : " + IA.transform.localScale.x;
 	}
 
 	void OnDestroy()

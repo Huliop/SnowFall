@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour {
         forward = Vector3.ProjectOnPlane(mainCamera.transform.forward.normalized, Vector3.up);
         radius = transform.localScale.x;
 
-        movePlayer(forward);
+        movePlayer(getMoveDirection(forward));
         
         if (Input.GetMouseButtonDown(0)) {
             shoot(forward);
@@ -35,11 +35,17 @@ public class PlayerController : MonoBehaviour {
         return moveDirection;
     }
 
-    public void movePlayer(Vector3 forward) {
+    Vector3 getMoveDirection(Vector3 forward) {
 
-        // On calcule les nouvelles positions et rotations de la boule
+        // On calcule la direction dans laquelle le joueur veut aller en fonction de la où il regarde
         Vector3 forwardOrthoPLanXZ = Vector3.Cross(Vector3.up, forward);
         moveDirection = (forward.normalized * Input.GetAxisRaw("Vertical") + forwardOrthoPLanXZ.normalized * Input.GetAxisRaw("Horizontal")).normalized;
+        return moveDirection;
+    }
+
+    void movePlayer(Vector3 moveDirection) {
+
+        // On calcule l'axe autour de laquelle la boule va rouler
         Vector3 rotationAxis = Vector3.Cross(moveDirection, Vector3.up);
 
         // On met à jour la position et la rotation de la boule
@@ -64,12 +70,21 @@ public class PlayerController : MonoBehaviour {
     }
 
     void updateSpeed() {
-        speed = 20f - transform.localScale.x * 0.5f;
+        speed = 20f - transform.localScale.x;
     }
 
     void OnCollisionEnter(Collision collision) {
         if (collision.collider.tag == "Meteor")
-            isMelting = true;    
+            isMelting = true;
+        if (collision.collider.tag == "Wall") {
+            movePlayer(-moveDirection);
+        }
+    }
+
+    void OnCollisionStay(Collision collision) {
+        if (collision.collider.tag == "Wall") {
+            movePlayer(-moveDirection);
+        }
     }
 
     void OnCollisionExit(Collision collision) {
