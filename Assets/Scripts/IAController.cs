@@ -6,20 +6,40 @@ public class IAController : MonoBehaviour {
 
 	public float speed = 20f;
 	public float rotSpeed = 0.05f;
+    public float snowBallSpeed = 250f;
+    public GameObject prefab;
+	public GameObject player;
+    public float radius = 1f;
 	private Vector3 forward = Vector3.zero;
 	private Vector3 moveDirection = Vector3.zero;
 	bool isMelting = false;
+    private bool stun = false;
+    private float timeStampStun;
+	private float timeStampShoot;
 
 	// Use this for initialization
 	void Start () {
 		updateForward();
+		timeStampShoot = Time.time + 5;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		radius = transform.localScale.x;
+		if (!stun){
+			updateMoveDirection();
+			moveAI(moveDirection);
+			if (timeStampShoot < Time.time){
+				Vector3 direction = player.transform.position - transform.position;
+				shoot(direction);
+				timeStampShoot = Time.time + 5;
+			}
+		}
 
-		updateMoveDirection();
-		moveAI(moveDirection);
+		else {
+            if (timeStampStun < Time.time)
+                stun = false;
+        }
 
 		updateSize();
 		updateSpeed();
@@ -46,6 +66,16 @@ public class IAController : MonoBehaviour {
 
 	}
 
+	void shoot(Vector3 forward) {
+
+        // On instancie la boule de neige
+        GameObject clone = Instantiate(prefab, transform.position + forward.normalized * (radius/2 + prefab.transform.localScale.x/2) , Quaternion.identity);
+
+        clone.GetComponent<Rigidbody>().AddForce(forward.normalized * snowBallSpeed);
+        Destroy(clone, 10f);
+        transform.localScale -= Vector3.one * 0.1f;
+    }
+
 	public Vector3 getDirection() {
         return moveDirection;
     }
@@ -59,18 +89,34 @@ public class IAController : MonoBehaviour {
 
 	void updateSize() {
         if (isMelting) {
-            transform.localScale -= new Vector3(1,1,1) * 0.02f;
+            transform.localScale -= Vector3.one * 0.04f;
         }
     }
 	void updateSpeed() {
         speed = 20f - transform.localScale.x;
 	}
 
+	void OnTriggerEnter(Collider col){
+        if (col.tag == "Meteor"){
+            isMelting = true;
+        }
+    }
+
+    void OnTriggerExit(Collider col){
+        if (col.tag == "Meteor"){
+            isMelting = false;
+        }
+    }
+
 	void OnCollisionEnter(Collision collision) {
         if (collision.collider.tag == "Meteor")
             isMelting = true;
         if (collision.collider.tag == "Wall") {
             moveAI(-moveDirection);
+        }
+		if (collision.collider.tag == "snowBall") {
+            stun = true;
+            timeStampStun = Time.time + 2;
         }
     }
 

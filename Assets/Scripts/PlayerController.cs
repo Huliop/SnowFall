@@ -9,22 +9,30 @@ public class PlayerController : MonoBehaviour {
     //Variables
     public float speed = 20f;
     public float rotSpeed = 0.05f;
-    public float snowBallSpeed = 50f;
+    public float snowBallSpeed = 250f;
     public GameObject prefab;
     private Vector3 moveDirection = Vector3.zero;
     private Vector3 forward = Vector3.zero;
     public float radius = 1f;
     bool isMelting = false;
+    private bool stun = false;
+    private float timeStampStun;
  
 
     void Update() {
-        forward = Vector3.ProjectOnPlane(mainCamera.transform.forward.normalized, Vector3.up);
         radius = transform.localScale.x;
+        if (!stun){
+            forward = Vector3.ProjectOnPlane(mainCamera.transform.forward.normalized, Vector3.up);
 
-        movePlayer(getMoveDirection(forward));
-        
-        if (Input.GetMouseButtonDown(0)) {
-            shoot(forward);
+            movePlayer(getMoveDirection(forward));
+            
+            if (Input.GetMouseButtonDown(0)) {
+                shoot(forward);
+            }
+        }
+        else {
+            if (timeStampStun < Time.time)
+                stun = false;
         }
 
         updateSize();
@@ -65,7 +73,7 @@ public class PlayerController : MonoBehaviour {
 
     void updateSize() {
         if (isMelting) {
-            transform.localScale -= new Vector3(1,1,1) * 0.02f;
+            transform.localScale -= Vector3.one * 0.04f;
         }
     }
 
@@ -73,11 +81,27 @@ public class PlayerController : MonoBehaviour {
         speed = 20f - transform.localScale.x;
     }
 
+    void OnTriggerEnter(Collider col){
+        if (col.tag == "Meteor"){
+            isMelting = true;
+        }
+    }
+
+    void OnTriggerExit(Collider col){
+        if (col.tag == "Meteor"){
+            isMelting = false;
+        }
+    }
+    
     void OnCollisionEnter(Collision collision) {
         if (collision.collider.tag == "Meteor")
             isMelting = true;
         if (collision.collider.tag == "Wall") {
             movePlayer(-moveDirection);
+        }
+        if (collision.collider.tag == "snowBall") {
+            stun = true;
+            timeStampStun = Time.time + 2;
         }
     }
 

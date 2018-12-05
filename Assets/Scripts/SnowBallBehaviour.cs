@@ -22,5 +22,9 @@ public class SnowBallBehaviour : MonoBehaviour {
 			// On détruit la boule de neige
 			Destroy(gameObject);
 		}
+		if (collision.collider.tag == "Terrain") {
+			// On détruit la boule de neige
+			Destroy(gameObject);
+		}
     }
 }

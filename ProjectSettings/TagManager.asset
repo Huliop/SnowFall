@@ -9,6 +9,7 @@ TagManager:
   - Wall
   - sizePlayer
   - sizeAI
+  - Terrain
   layers:
   - Default
   - TransparentFX

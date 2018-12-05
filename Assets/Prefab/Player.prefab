@@ -37,7 +37,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1247128695624662}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 31.9, y: 1.5, z: 21.1}
+  m_LocalPosition: {x: 20, y: 1.5, z: 20}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children: []
   m_Father: {fileID: 0}
@@ -99,7 +99,7 @@ MonoBehaviour:
   mainCamera: {fileID: 0}
   speed: 20
   rotSpeed: 0.05
-  snowBallSpeed: 100
+  snowBallSpeed: 250
   prefab: {fileID: 1925025543936262, guid: 15dfe6083a4e40249b6b69a7005ba514, type: 2}
   radius: 1
 --- !u!135 &135339830306771690

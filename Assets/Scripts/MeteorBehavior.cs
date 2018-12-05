@@ -7,15 +7,17 @@ public class MeteorBehavior : MonoBehaviour {
 	public List<Vector2> listPos;
 
 	public Terrain terrain;
+	private Rigidbody rb;
+	bool done;
 	int hmHeight;
 	int hmWidth;
 	float radiusMeteor = 4f;
 
 	void Start () {
-		terrain = FindObjectOfType<Terrain>();
 
 		listPos = new List<Vector2>();
-
+		done = false;
+		rb = GetComponent<Rigidbody>();
 		hmWidth = terrain.terrainData.heightmapWidth;
 		hmHeight = terrain.terrainData.heightmapHeight;
 
@@ -26,6 +28,16 @@ public class MeteorBehavior : MonoBehaviour {
 				if (Mathf.Pow(j-posMeteor.x,2) + Mathf.Pow(i-posMeteor.y,2) < radius)
 					listPos.Add((new Vector2(i, j)));
 			}
+		}
+	}
+
+	void Update(){
+		if(transform.position.y > 0){
+			transform.position = transform.position - new Vector3(0,16,0) * Time.deltaTime;
+		}
+		if (transform.position.y < 0 && !done){
+			rb.isKinematic = true;
+			done = true;
 		}
 	}
 	

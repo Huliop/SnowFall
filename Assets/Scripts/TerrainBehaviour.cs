@@ -23,6 +23,9 @@ public class TerrainBehaviour : MonoBehaviour {
 	private float rand;
 	private MeteorBehavior[] meteors;
 	private float[,] originalHeights;
+	private float spawnCD;
+	private float spawnTime;
+	public GameObject prefab;
 	
 	void Start () {
 		playerController = player.GetComponent<PlayerController>();
@@ -30,9 +33,14 @@ public class TerrainBehaviour : MonoBehaviour {
 		hmWidth = terrain.terrainData.heightmapWidth;
 		hmHeight = terrain.terrainData.heightmapHeight;
 		originalHeights = terrain.terrainData.GetHeights(0, 0, hmWidth, hmHeight);
+		spawnCD = Time.time;
+		spawnTime = 10;
 	}
 	
 	void Update () {
+		updateSpwanTime();
+
+		spawnMeteor();
 
 		// On récupère les différentes données nécessaires à la boucle d'Update
 		getData();
@@ -44,6 +52,24 @@ public class TerrainBehaviour : MonoBehaviour {
 		updateMapHeights();
 
 		updateText();
+	}
+
+	void updateSpwanTime(){
+		if (Time.time > 30)
+			spawnTime = 5;
+		if (Time.time > 60)
+			spawnTime = 2;
+	}
+
+	void spawnMeteor(){
+		if (spawnCD < Time.time){
+			spawnCD = Time.time + spawnTime;
+			int x = Random.Range(5,96);
+			int z = Random.Range(5,96);
+			Vector3 randomPos = new Vector3(x, 30, z);
+			GameObject clone = Instantiate(prefab, randomPos, new Quaternion());
+			Destroy(clone, 15);
+		}
 	}
 
 	void getData() {
