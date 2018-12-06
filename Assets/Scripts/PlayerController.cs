@@ -18,7 +18,6 @@ public class PlayerController : MonoBehaviour {
     private bool stun = false;
     private float timeStampStun;
  
-
     void Update() {
         radius = transform.localScale.x;
         if (!stun){

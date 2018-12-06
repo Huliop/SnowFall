@@ -32,7 +32,9 @@ public class TerrainBehaviour : MonoBehaviour {
 		AIController = IA.GetComponent<IAController>();
 		hmWidth = terrain.terrainData.heightmapWidth;
 		hmHeight = terrain.terrainData.heightmapHeight;
-		originalHeights = terrain.terrainData.GetHeights(0, 0, hmWidth, hmHeight);
+
+		restartHeights();
+
 		spawnCD = Time.time;
 		spawnTime = 10;
 	}
@@ -52,6 +54,17 @@ public class TerrainBehaviour : MonoBehaviour {
 		updateMapHeights();
 
 		updateText();
+	}
+
+	void restartHeights() {
+		float[,] heights = terrain.terrainData.GetHeights(0 , 0, hmWidth, hmHeight);
+
+		for (int i=0; i < hmWidth; i++){
+			for (int j=0; j < hmHeight; j++){
+				heights[i,j] = 0;
+			}
+		}
+		terrain.terrainData.SetHeightsDelayLOD(0, 0, heights);
 	}
 
 	void updateSpwanTime(){
