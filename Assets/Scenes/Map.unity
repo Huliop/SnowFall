@@ -753,6 +753,16 @@ Prefab:
       propertyPath: m_RootOrder
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 114301686771667294, guid: c7e7a265ce7f9b349a4d2e35b87840ae,
+        type: 2}
+      propertyPath: ia
+      value: 
+      objectReference: {fileID: 1263354663}
+    - target: {fileID: 114301686771667294, guid: c7e7a265ce7f9b349a4d2e35b87840ae,
+        type: 2}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 1025686222}
     - target: {fileID: 114095774311759954, guid: c7e7a265ce7f9b349a4d2e35b87840ae,
         type: 2}
       propertyPath: terrain
@@ -768,12 +778,6 @@ Prefab:
       propertyPath: IA
       value: 
       objectReference: {fileID: 1263354663}
-    - target: {fileID: 114095774311759954, guid: c7e7a265ce7f9b349a4d2e35b87840ae,
-        type: 2}
-      propertyPath: prefab
-      value: 
-      objectReference: {fileID: 1306804140287300, guid: ea02ae65b70f19449820927db7eb0b3b,
-        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c7e7a265ce7f9b349a4d2e35b87840ae, type: 2}
   m_IsPrefabAsset: 0

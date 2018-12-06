@@ -73,7 +73,9 @@ public class PlayerController : MonoBehaviour {
 
     void updateSize() {
         if (isMelting) {
-            transform.localScale -= Vector3.one * 0.04f;
+            Vector3 newScale = transform.localScale - Vector3.one * 0.04f;
+            if (newScale.x > 0)
+                transform.localScale = newScale;
         }
     }
 

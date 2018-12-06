@@ -20,6 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4009541384017606}
   - component: {fileID: 114095774311759954}
+  - component: {fileID: 114301686771667294}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -54,3 +55,17 @@ MonoBehaviour:
   terrain: {fileID: 0}
   player: {fileID: 0}
   IA: {fileID: 0}
+  prefab: {fileID: 1306804140287300, guid: ea02ae65b70f19449820927db7eb0b3b, type: 2}
+--- !u!114 &114301686771667294
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1853441724860998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01429d1c5c5ba0b4db4774cbfe28f0ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ia: {fileID: 0}
+  player: {fileID: 0}
