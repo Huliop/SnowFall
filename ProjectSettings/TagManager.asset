@@ -10,6 +10,8 @@ TagManager:
   - sizePlayer
   - sizeAI
   - Terrain
+  - Credit
+  - EndGame
   layers:
   - Default
   - TransparentFX

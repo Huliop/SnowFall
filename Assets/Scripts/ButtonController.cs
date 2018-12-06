@@ -6,13 +6,26 @@ using UnityEngine.SceneManagement;
 
 public class ButtonController : MonoBehaviour {
 
-	public Button replay;
+	public Button play;
+	public Button credit;
 	public Button menu;
+	public Button exit;
 
 	// Use this for initialization
 	void Start () {
-		replay.onClick.AddListener(replayOnClick);
-		menu.onClick.AddListener(menuOnClick);
+		if (gameObject.tag == "Credit"){
+			menu.onClick.AddListener(menuOnClick);
+			
+		}
+		else if (gameObject.tag == "EndGame"){
+			play.onClick.AddListener(playOnClick);
+			menu.onClick.AddListener(menuOnClick);
+		}
+		else {
+			play.onClick.AddListener(playOnClick);
+			credit.onClick.AddListener(creditOnClick);
+			exit.onClick.AddListener(exitOnClick);
+		}
 	}
 	
 	// Update is called once per frame
@@ -20,16 +33,23 @@ public class ButtonController : MonoBehaviour {
 		
 	}
 
-	void replayOnClick(){
-		StartCoroutine(changeScene("Map"));
+	void playOnClick(){
+		changeScene("Map");
+	}
+
+	void creditOnClick(){
+		changeScene("Credit");
 	}
 
 	void menuOnClick(){
-		StartCoroutine(changeScene("Menu"));
+		changeScene("Menu");
 	}
 
-	IEnumerator changeScene(string scene) {
-		yield return new WaitForSeconds(1.0f);
+	void exitOnClick(){
+		Application.Quit();
+	}
+
+	void changeScene(string scene) {
         SceneManager.LoadScene(scene);
 
     }

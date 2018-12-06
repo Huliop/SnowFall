@@ -987,6 +987,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   play: {fileID: 1089969612}
   credit: {fileID: 1060175830}
+  menu: {fileID: 0}
   exit: {fileID: 1151318828}
 --- !u!1 &1941457497
 GameObject:

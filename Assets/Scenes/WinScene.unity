@@ -488,7 +488,7 @@ GameObject:
   - component: {fileID: 1284872193}
   m_Layer: 5
   m_Name: Canvas
-  m_TagString: Untagged
+  m_TagString: EndGame
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -580,11 +580,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1284872188}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e271669a7fe30654eb37b2bf0d4f4bbe, type: 3}
+  m_Script: {fileID: 11500000, guid: dc4c36ed715c09542b442be02945ba82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  replay: {fileID: 842654993}
+  play: {fileID: 842654993}
+  credit: {fileID: 0}
   menu: {fileID: 369805179}
+  exit: {fileID: 0}
 --- !u!1 &1383310026
 GameObject:
   m_ObjectHideFlags: 0
