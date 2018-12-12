@@ -12,6 +12,8 @@ TagManager:
   - Terrain
   - Credit
   - EndGame
+  - ZWall
+  - XWall
   layers:
   - Default
   - TransparentFX

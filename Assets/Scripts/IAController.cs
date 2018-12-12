@@ -7,25 +7,32 @@ public class IAController : MonoBehaviour {
 	public float speed = 20f;
 	public float rotSpeed = 0.05f;
     public float snowBallSpeed = 250f;
+	public float wanderDistance = 10f;
+	public float wanderRadius = 2f;
+	public float wanderJitter = 3f;
     public GameObject prefab;
 	public GameObject player;
     public float radius = 1f;
-	private Vector3 forward = Vector3.zero;
-	private Vector3 moveDirection = Vector3.zero;
+	Vector3 moveDirection = Vector3.zero;
+	Vector3 wanderTarget;
 	bool isMelting = false;
     private bool stun = false;
     private float timeStampStun;
 	private float timeStampShoot;
+	bool touchingXWall;
+	bool touchingZWall;
 
 	// Use this for initialization
 	void Start () {
-		updateForward();
+		updateWanderTarget();
+
 		timeStampShoot = Time.time + 5;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		radius = transform.localScale.x;
+
 		if (!stun){
 			updateMoveDirection();
 			moveAI(moveDirection);
@@ -54,16 +61,18 @@ public class IAController : MonoBehaviour {
 	}
 
 	void updateMoveDirection() {
-		int proba = Random.Range(0,101);
+		updateWanderTarget();
 
-		if (proba<80) {
-			moveDirection = forward;
-		}
-		else {
-			updateForward();
-			moveDirection = forward;
-		}
+		Vector3 posTarget = wanderTarget + transform.position + moveDirection*wanderDistance;
 
+		moveDirection = (posTarget - transform.position).normalized;
+	}
+
+	void updateWanderTarget() {
+		float randX = Random.Range(-1f,1f);
+		float randZ = Random.Range(-1f,1f);
+		wanderTarget += new Vector3(randX * wanderJitter, 0, randZ * wanderJitter);
+		wanderTarget = wanderTarget.normalized * wanderRadius;
 	}
 
 	void shoot(Vector3 forward) {
@@ -80,13 +89,6 @@ public class IAController : MonoBehaviour {
         return moveDirection;
     }
 
-	void updateForward() {
-		float moveHorizontal = Random.Range(-1f, 1f);
-		float moveVertical = Random.Range(-1f, 1f);
-
-		forward = new Vector3(moveHorizontal, 0, moveVertical).normalized;
-	}
-
 	void updateSize() {
         if (isMelting) {
 			Vector3 newScale = transform.localScale - Vector3.one * 0.04f;
@@ -102,29 +104,66 @@ public class IAController : MonoBehaviour {
         if (col.tag == "Meteor"){
             isMelting = true;
         }
+        
+        if (touchingXWall && touchingZWall) {
+            moveAI(-moveDirection);
+        }
+        else if (col.tag == "XWall") {
+            touchingXWall = true;
+            if (touchingXWall) {
+                Vector3 newDirection = moveDirection;
+                newDirection.x *= -1f;
+                moveAI(newDirection);
+            }
+        }
+
+        else if (col.tag == "ZWall") {
+            touchingZWall = true;
+            if (touchingZWall) {
+                Vector3 newDirection = moveDirection;
+                newDirection.z *= -1f;
+                moveAI(newDirection);
+            }
+        }
+    }
+
+    void OnTriggerStay(Collider col) {
+        if (touchingXWall && touchingZWall) {
+            moveAI(-moveDirection);
+        }
+        else if (col.tag == "XWall") {
+            if (touchingXWall) {
+                Vector3 newDirection = moveDirection;
+                newDirection.x *= -1f;
+                moveAI(newDirection);
+            }
+        }
+
+        else if (col.tag == "ZWall") {
+            if (touchingZWall) {
+                Vector3 newDirection = moveDirection;
+                newDirection.z *= -1f;
+                moveAI(newDirection);
+            }
+        }
     }
 
     void OnTriggerExit(Collider col){
         if (col.tag == "Meteor"){
             isMelting = false;
         }
+        if (col.tag == "XWall")
+            touchingXWall = false;
+        if (col.tag == "ZWall")
+            touchingZWall = false;
     }
 
 	void OnCollisionEnter(Collision collision) {
         if (collision.collider.tag == "Meteor")
             isMelting = true;
-        if (collision.collider.tag == "Wall") {
-            moveAI(-moveDirection);
-        }
 		if (collision.collider.tag == "snowBall") {
             stun = true;
             timeStampStun = Time.time + 2;
-        }
-    }
-
-    void OnCollisionStay(Collision collision) {
-        if (collision.collider.tag == "Wall") {
-            moveAI(-moveDirection);
         }
     }
 

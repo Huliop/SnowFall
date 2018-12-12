@@ -203,9 +203,4 @@ public class TerrainBehaviour : MonoBehaviour {
 		playerText.text = "Player size : " + player.transform.localScale.x;
 		AIText.text = "AI size : " + IA.transform.localScale.x;
 	}
-
-	void OnDestroy()
-		{
-			terrain.terrainData.SetHeights(0, 0, originalHeights);
-		}
 }

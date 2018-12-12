@@ -17,6 +17,8 @@ public class PlayerController : MonoBehaviour {
     bool isMelting = false;
     private bool stun = false;
     private float timeStampStun;
+    bool touchingXWall = false;
+    bool touchingZWall = false;
  
     void Update() {
         radius = transform.localScale.x;
@@ -86,29 +88,66 @@ public class PlayerController : MonoBehaviour {
         if (col.tag == "Meteor"){
             isMelting = true;
         }
+        
+        if (touchingXWall && touchingZWall) {
+            movePlayer(-moveDirection);
+        }
+        else if (col.tag == "XWall") {
+            touchingXWall = true;
+            if (touchingXWall) {
+                Vector3 newDirection = moveDirection;
+                newDirection.x *= -1f;
+                movePlayer(newDirection);
+            }
+        }
+
+        else if (col.tag == "ZWall") {
+            touchingZWall = true;
+            if (touchingZWall) {
+                Vector3 newDirection = moveDirection;
+                newDirection.z *= -1f;
+                movePlayer(newDirection);
+            }
+        }
+    }
+
+    void OnTriggerStay(Collider col) {
+        if (touchingXWall && touchingZWall) {
+            movePlayer(-moveDirection);
+        }
+        else if (col.tag == "XWall") {
+            if (touchingXWall) {
+                Vector3 newDirection = moveDirection;
+                newDirection.x *= -1f;
+                movePlayer(newDirection);
+            }
+        }
+
+        else if (col.tag == "ZWall") {
+            if (touchingZWall) {
+                Vector3 newDirection = moveDirection;
+                newDirection.z *= -1f;
+                movePlayer(newDirection);
+            }
+        }
     }
 
     void OnTriggerExit(Collider col){
         if (col.tag == "Meteor"){
             isMelting = false;
         }
+        if (col.tag == "XWall")
+            touchingXWall = false;
+        if (col.tag == "ZWall")
+            touchingZWall = false;
     }
     
     void OnCollisionEnter(Collision collision) {
         if (collision.collider.tag == "Meteor")
             isMelting = true;
-        if (collision.collider.tag == "Wall") {
-            movePlayer(-moveDirection);
-        }
         if (collision.collider.tag == "snowBall") {
             stun = true;
             timeStampStun = Time.time + 2;
-        }
-    }
-
-    void OnCollisionStay(Collision collision) {
-        if (collision.collider.tag == "Wall") {
-            movePlayer(-moveDirection);
         }
     }
 
