@@ -9,25 +9,27 @@ public class GameManager : MonoBehaviour {
 	private float goalScale;
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		goalScale = 12;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (ia.transform.localScale.x > goalScale )
-			StartCoroutine(gameOver());
+			gameOver();
 		else if (player.transform.localScale.x > goalScale)
-			StartCoroutine(win());
+			win();
 	}
 
-	public IEnumerator gameOver(){
-		yield return new WaitForSeconds(0.1f);
+	public void gameOver(){
 		SceneManager.LoadScene("GameOverScene");
 	}
 
-	public IEnumerator win(){
-		yield return new WaitForSeconds(0.1f);
+	public void win(){
 		SceneManager.LoadScene("WinScene");
+	}
+
+	public float getGoalScale() {
+		return goalScale;
 	}
 }

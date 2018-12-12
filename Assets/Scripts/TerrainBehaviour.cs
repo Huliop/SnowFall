@@ -52,8 +52,6 @@ public class TerrainBehaviour : MonoBehaviour {
 		
 		// On met à jour la hauteur du terrain
 		updateMapHeights();
-
-		updateText();
 	}
 
 	void restartHeights() {
@@ -191,16 +189,5 @@ public class TerrainBehaviour : MonoBehaviour {
 				heights[(int) pos.x, (int) pos.y] = 0;
 		}
 				
-	}
-
-	void updateText() {
-		GameObject playerTextObj = GameObject.FindGameObjectWithTag("sizePlayer");
-		GameObject AITextObj = GameObject.FindGameObjectWithTag("sizeAI");
-
-		Text playerText = playerTextObj.GetComponent<Text>();
-		Text AIText = AITextObj.GetComponent<Text>();
-
-		playerText.text = "Player size : " + player.transform.localScale.x;
-		AIText.text = "AI size : " + IA.transform.localScale.x;
 	}
 }
