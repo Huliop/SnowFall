@@ -10,14 +10,12 @@ public class ButtonController : MonoBehaviour {
 	public Button credit;
 	public Button menu;
 	public Button exit;
+	public GameObject main;
+	public GameObject credits;
 
 	// Use this for initialization
 	void Start () {
-		if (gameObject.tag == "Credit"){
-			menu.onClick.AddListener(menuOnClick);
-			
-		}
-		else if (gameObject.tag == "EndGame"){
+		if (gameObject.tag == "EndGame"){
 			play.onClick.AddListener(playOnClick);
 			menu.onClick.AddListener(menuOnClick);
 		}
@@ -38,11 +36,18 @@ public class ButtonController : MonoBehaviour {
 	}
 
 	void creditOnClick(){
-		changeScene("Credit");
+		main.SetActive(false);
+		credits.SetActive(true);
+		menu.onClick.AddListener(menuOnClick);
 	}
 
 	void menuOnClick(){
-		changeScene("Menu");
+		if (gameObject.tag == "EndGame")
+			changeScene("Menu");
+		else {
+			main.SetActive(true);
+			credits.SetActive(false);
+		} 
 	}
 
 	void exitOnClick(){
