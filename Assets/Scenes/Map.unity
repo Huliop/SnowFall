@@ -1396,6 +1396,11 @@ Prefab:
       propertyPath: wanderJitter
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114462707788493026, guid: c1823996f8fde294284c64ccf71e7167,
+        type: 2}
+      propertyPath: snowBallSpeed
+      value: 400
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c1823996f8fde294284c64ccf71e7167, type: 2}
   m_IsPrefabAsset: 0
@@ -1458,6 +1463,11 @@ Prefab:
       propertyPath: mainCamera
       value: 
       objectReference: {fileID: 74642531}
+    - target: {fileID: 114970948845201948, guid: 9896b00d245d8274cbe3b0ead7ce5cc6,
+        type: 2}
+      propertyPath: snowBallSpeed
+      value: 400
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9896b00d245d8274cbe3b0ead7ce5cc6, type: 2}
   m_IsPrefabAsset: 0
