@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour {
 	private GameObject ia;
 	private GameObject player;
 	private float goalScale;
-	bool difficult;
+	private bool difficult;
 
 	// Use this for initialization
 	void Awake () {
