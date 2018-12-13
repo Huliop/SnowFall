@@ -12,6 +12,8 @@ public class MeteorBehavior : MonoBehaviour {
 	int hmHeight;
 	int hmWidth;
 	float radiusMeteor = 4f;
+	private GameObject player;
+	private bool collidingPlayer;
 
 	void Awake() {
 		terrain = GameObject.Find("Terrain").GetComponent<Terrain>();
@@ -58,5 +60,30 @@ public class MeteorBehavior : MonoBehaviour {
 		pos.x = (int) (coord.x * hmWidth);
 		pos.y = (int) (coord.z * hmHeight);
 		return pos;
+	}
+
+	void OnTriggerEnter(Collider collider){
+		if (collider.gameObject.tag == "Player"){
+			player = collider.gameObject;
+			collidingPlayer = true;
+		}
+	}
+
+		void OnTriggerExit(Collider collider){
+		if (collider.gameObject.tag == "Player"){
+			player = collider.gameObject;
+			collidingPlayer = false;
+		}
+	}
+
+	void OnDestroy(){
+		if (collidingPlayer){
+			if (player.GetComponent<PlayerController>().melt()){
+				player.GetComponent<PlayerController>().meltOff();
+			} 
+			else if (player.GetComponent<IAController>().melt()){
+				player.GetComponent<IAController>().meltOff();
+			}
+		}
 	}
 }

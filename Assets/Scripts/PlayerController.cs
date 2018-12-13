@@ -69,7 +69,9 @@ public class PlayerController : MonoBehaviour {
 
         clone.GetComponent<Rigidbody>().AddForce(forward.normalized * snowBallSpeed);
         Destroy(clone, 10f);
-        transform.localScale -= Vector3.one * 0.1f;
+        Vector3 newScale = transform.localScale - Vector3.one * 0.1f;
+        if (newScale.x > 0)
+            transform.localScale = newScale;
     }
 
     void updateSize() {
@@ -158,6 +160,14 @@ public class PlayerController : MonoBehaviour {
 
     public bool isStun(){
         return stun;
+    }
+
+    public void meltOff(){
+        isMelting = false;
+    }
+
+    public bool melt(){
+        return isMelting;
     }
  }
 

@@ -143,8 +143,10 @@ public class IAController : MonoBehaviour {
 
             clone.GetComponent<Rigidbody>().AddForce(forward.normalized * snowBallSpeed);
             Destroy(clone, 10f);
-            transform.localScale -= Vector3.one * 0.1f;
-        }
+            Vector3 newScale = transform.localScale - Vector3.one * 0.1f;
+            if (newScale.x > 0)
+                transform.localScale = newScale;
+            }
     }
 
 	public Vector3 getDirection() {
@@ -236,5 +238,13 @@ public class IAController : MonoBehaviour {
     void OnCollisionExit(Collision collision) {
         if (collision.collider.tag == "Meteor")
             isMelting = false;
+    }
+
+    public bool melt(){
+        return isMelting;
+    }
+
+    public void meltOff(){
+        isMelting = false;
     }
 }
