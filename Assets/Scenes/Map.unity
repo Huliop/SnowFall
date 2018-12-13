@@ -478,7 +478,7 @@ GameObject:
   - component: {fileID: 129045676}
   - component: {fileID: 129045675}
   - component: {fileID: 129045679}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: XWall Est
   m_TagString: XWall
   m_Icon: {fileID: 0}
@@ -625,7 +625,7 @@ GameObject:
   - component: {fileID: 325470264}
   - component: {fileID: 325470263}
   - component: {fileID: 325470267}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: XWall Ouest
   m_TagString: XWall
   m_Icon: {fileID: 0}
@@ -753,16 +753,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 6
       objectReference: {fileID: 0}
-    - target: {fileID: 114301686771667294, guid: c7e7a265ce7f9b349a4d2e35b87840ae,
-        type: 2}
-      propertyPath: ia
-      value: 
-      objectReference: {fileID: 1263354663}
-    - target: {fileID: 114301686771667294, guid: c7e7a265ce7f9b349a4d2e35b87840ae,
-        type: 2}
-      propertyPath: player
-      value: 
-      objectReference: {fileID: 1025686222}
     - target: {fileID: 114095774311759954, guid: c7e7a265ce7f9b349a4d2e35b87840ae,
         type: 2}
       propertyPath: terrain
@@ -778,6 +768,16 @@ Prefab:
       propertyPath: IA
       value: 
       objectReference: {fileID: 1263354663}
+    - target: {fileID: 114301686771667294, guid: c7e7a265ce7f9b349a4d2e35b87840ae,
+        type: 2}
+      propertyPath: ia
+      value: 
+      objectReference: {fileID: 1263354663}
+    - target: {fileID: 114301686771667294, guid: c7e7a265ce7f9b349a4d2e35b87840ae,
+        type: 2}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 1025686222}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c7e7a265ce7f9b349a4d2e35b87840ae, type: 2}
   m_IsPrefabAsset: 0
@@ -890,6 +890,11 @@ Prefab:
         type: 2}
       propertyPath: wanderJitter
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114462707788493026, guid: c1823996f8fde294284c64ccf71e7167,
+        type: 2}
+      propertyPath: speed
+      value: 20
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c1823996f8fde294284c64ccf71e7167, type: 2}
@@ -1067,7 +1072,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1148764332}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Walls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1149,7 +1154,7 @@ GameObject:
   - component: {fileID: 1170310624}
   - component: {fileID: 1170310623}
   - component: {fileID: 1170310627}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ZWall Nord
   m_TagString: ZWall
   m_Icon: {fileID: 0}
@@ -1415,6 +1420,26 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f21e17f8bea234247b69113a82e3b1b3, type: 2}
   m_IsPrefabAsset: 0
+--- !u!1 &1573161720 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1225357379256206, guid: f21e17f8bea234247b69113a82e3b1b3,
+    type: 2}
+  m_PrefabInternal: {fileID: 1573161719}
+--- !u!114 &1573161721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1573161720}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1ba0329c0aaedf4ba7519baf5c0caec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  terrain: {fileID: 1201288839}
+  player: {fileID: 1025686222}
+  IA: {fileID: 1263354663}
+  prefab: {fileID: 1306804140287300, guid: ea02ae65b70f19449820927db7eb0b3b, type: 2}
 --- !u!1 &1759961005
 GameObject:
   m_ObjectHideFlags: 0
@@ -1427,7 +1452,7 @@ GameObject:
   - component: {fileID: 1759961007}
   - component: {fileID: 1759961006}
   - component: {fileID: 1759961010}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ZWall Sud
   m_TagString: ZWall
   m_Icon: {fileID: 0}

@@ -21,12 +21,21 @@ public class IAController : MonoBehaviour {
 	private float timeStampShoot;
 	bool touchingXWall;
 	bool touchingZWall;
+    private GameObject gameManager;
+    private GameManager gameManagerScript;
+    private bool difficult;
+    private Vector3 wayPoint;
+    private float distanceTolerance; 
 
 	// Use this for initialization
 	void Start () {
 		updateWanderTarget();
+        gameManager = GameObject.Find("GameManager");
+        gameManagerScript = gameManager.GetComponent<GameManager>();
+        difficult = gameManagerScript.isDifficultOn();
 
 		timeStampShoot = Time.time + 5;
+        distanceTolerance = 3;
 	}
 	
 	// Update is called once per frame
@@ -35,6 +44,7 @@ public class IAController : MonoBehaviour {
 
 		if (!stun){
 			updateMoveDirection();
+            avoidObstacles(radius);
 			moveAI(moveDirection);
 			if (timeStampShoot < Time.time){
 				Vector3 direction = player.transform.position - transform.position;
@@ -61,11 +71,19 @@ public class IAController : MonoBehaviour {
 	}
 
 	void updateMoveDirection() {
-		updateWanderTarget();
+        if (!difficult){
+		    updateWanderTarget();
 
-		Vector3 posTarget = wanderTarget + transform.position + moveDirection*wanderDistance;
+            Vector3 posTarget = wanderTarget + transform.position + moveDirection*wanderDistance;
 
-		moveDirection = (posTarget - transform.position).normalized;
+            moveDirection = (posTarget - transform.position).normalized;
+        }
+        else {
+            if (Vector3.Distance(transform.position, wayPoint) < distanceTolerance)
+                updateWayPoint();
+            moveDirection = (wayPoint - transform.position).normalized;
+        }
+        moveDirection.y = 0;
 	}
 
 	void updateWanderTarget() {
@@ -74,6 +92,33 @@ public class IAController : MonoBehaviour {
 		wanderTarget += new Vector3(randX * wanderJitter, 0, randZ * wanderJitter);
 		wanderTarget = wanderTarget.normalized * wanderRadius;
 	}
+
+    void updateWayPoint(){
+
+    }
+
+    void avoidObstacles(float radius){
+        RaycastHit hit;
+        Vector3 normale = Vector3.Cross(moveDirection, Vector3.up).normalized;
+        if (Physics.Raycast(new Vector3(transform.position.x + normale.x * radius/2, 0, transform.position.z + normale.z * radius/2), moveDirection, out hit, radius/2 + 1))
+            {
+                Vector3 hitNormal = hit.normal;
+                hitNormal.y = 0.0f; //Don't want to move in Y-Space  
+                moveDirection = (moveDirection + hitNormal).normalized;   
+            }
+        if (Physics.Raycast(new Vector3(transform.position.x - normale.x * radius/2, 0, transform.position.z - normale.z * radius/2), moveDirection, out hit, radius/2 + 1))
+            {
+                Vector3 hitNormal = hit.normal;
+                hitNormal.y = 0.0f; //Don't want to move in Y-Space  
+                moveDirection = (moveDirection + hitNormal).normalized;   
+            }
+        if (Physics.Raycast(new Vector3(transform.position.x, 0, transform.position.z), moveDirection, out hit, radius/2 + 1))
+            {
+                Vector3 hitNormal = hit.normal;
+                hitNormal.y = 0.0f; //Don't want to move in Y-Space  
+                moveDirection = (moveDirection + hitNormal).normalized;   
+            }
+    }
 
 	void shoot(Vector3 forward) {
 

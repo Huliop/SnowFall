@@ -26,5 +26,9 @@ public class SnowBallBehaviour : MonoBehaviour {
 			// On détruit la boule de neige
 			Destroy(gameObject);
 		}
+		if (collision.gameObject.layer == LayerMask.NameToLayer("Wall")) {
+			// On détruit la boule de neige
+			Destroy(gameObject);
+		}
     }
 }
