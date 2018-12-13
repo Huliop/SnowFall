@@ -13,6 +13,10 @@ public class MeteorBehavior : MonoBehaviour {
 	int hmWidth;
 	float radiusMeteor = 4f;
 
+	void Awake() {
+		terrain = GameObject.Find("Terrain").GetComponent<Terrain>();
+	}
+
 	void Start () {
 
 		listPos = new List<Vector2>();
