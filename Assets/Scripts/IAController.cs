@@ -53,12 +53,21 @@ public class IAController : MonoBehaviour {
 			updateMoveDirection();
             avoidObstacles(radius);
 			moveAI(moveDirection);
-			if (timeStampShoot < Time.time){
-				Vector3 direction = player.transform.position - transform.position;
-				shoot(direction);
-				timeStampShoot = Time.time + 5;
-			}
-		}
+
+            float dif = radius - player.transform.localScale.x;
+            if (dif > 0.1f){
+                if (timeStampShoot < Time.time){
+                    float distance = Vector3.Distance(player.transform.position, transform.position);
+                    int r = Random.Range(0,101);
+                    float res = Mathf.Clamp(r - distance + dif*5, 0, 100);
+                    if (res > 40){
+                        Vector3 direction = player.transform.position - transform.position;
+                        shoot(direction);
+                        timeStampShoot = Time.time + 3;
+                    }
+                }
+            }
+        }
 
 		else {
             if (timeStampStun < Time.time)
@@ -67,7 +76,7 @@ public class IAController : MonoBehaviour {
 
 		updateSize();
 		updateSpeed();
-	}
+    }
 
 	void moveAI(Vector3 moveDirection) {
 		Vector3 rotationAxis = Vector3.Cross(moveDirection, Vector3.up);
@@ -109,15 +118,12 @@ public class IAController : MonoBehaviour {
 
     void avoidObstacles(float radius){
         RaycastHit hit1, hit2;
-        bool hasHit1, hasHit2;
         Vector3 normale = Vector3.Cross(moveDirection, Vector3.up).normalized;
-        hasHit1 = Physics.Raycast(new Vector3(transform.position.x + normale.x * radius/2, 0, transform.position.z + normale.z * radius/2), moveDirection, out hit1, radius/2 + 5);
-        hasHit2 = Physics.Raycast(new Vector3(transform.position.x - normale.x * radius/2, 0, transform.position.z - normale.z * radius/2), moveDirection, out hit2, radius/2 + 5);
+        Physics.Raycast(new Vector3(transform.position.x + normale.x * radius/2, 0, transform.position.z + normale.z * radius/2), moveDirection, out hit1, radius/2 + 5);
+        Physics.Raycast(new Vector3(transform.position.x - normale.x * radius/2, 0, transform.position.z - normale.z * radius/2), moveDirection, out hit2, radius/2 + 5);
         
             float d1 = (hit1.distance == 0 ? 100 : hit1.distance);
             float d2 = (hit2.distance == 0 ? 100 : hit2.distance);
-            Debug.Log("d1 "+d1);
-            Debug.Log("d2 "+d2);
             if (d2 < d1){
                 Vector3 hitNormal = hit2.normal;
                 hitNormal.y = 0.0f; //Don't want to move in Y-Space  
@@ -143,6 +149,10 @@ public class IAController : MonoBehaviour {
 
 	public Vector3 getDirection() {
         return moveDirection;
+    }
+
+    public bool isStun(){
+        return stun;
     }
 
 	void updateSize() {

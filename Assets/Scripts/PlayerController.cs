@@ -155,5 +155,9 @@ public class PlayerController : MonoBehaviour {
         if (collision.collider.tag == "Meteor")
             isMelting = false;
     }
+
+    public bool isStun(){
+        return stun;
+    }
  }
 

@@ -167,14 +167,16 @@ public class TerrainBehaviour : MonoBehaviour {
 
 				// Si la position devant nous est celle de devant le joueur on grossit en fonction de la hauteur de neige
 				if (j == frontPlayer.x && i == frontPlayer.y) {
-					player.transform.localScale += new Vector3(1,1,1) * heights[i,j] / 30;
+					if (!player.GetComponent<PlayerController>().isStun())
+						player.transform.localScale += new Vector3(1,1,1) * heights[i,j] / 30;	
 					Vector3 position = new Vector3(player.transform.position.x, player.transform.localScale.y / 2, player.transform.position.z);
 					player.transform.position = position;
 				}
 
 				// Si la position devant nous est celle de devant l'IA on grossit en fonction de la hauteur de neige
 				if (j == frontAI.x && i == frontAI.y) {
-					IA.transform.localScale += new Vector3(1,1,1) * heights[i,j] / 30;
+					if (!IA.GetComponent<IAController>().isStun())
+						IA.transform.localScale += new Vector3(1,1,1) * heights[i,j] / 30;
 					Vector3 position = new Vector3(IA.transform.position.x, IA.transform.localScale.y / 2, IA.transform.position.z);
 					IA.transform.position = position;
 				}
