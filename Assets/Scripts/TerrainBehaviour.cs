@@ -49,6 +49,9 @@ public class TerrainBehaviour : MonoBehaviour {
 
 		// On récupère le point devant le joueur dans le repère du terrain
 		getFrontPlayer();
+
+		// On récupère le point devant l'IA dans le repère du terrain
+		getFrontAI();
 		
 		// On met à jour la hauteur du terrain
 		updateMapHeights();
@@ -137,6 +140,17 @@ public class TerrainBehaviour : MonoBehaviour {
 		return pos;
 	}
 
+	Vector3 fromTerrainPos(Vector3 pos) {
+
+		pos.x = (float)pos.x / hmWidth;
+		pos.y = (float)pos.y / hmHeight;
+
+		Vector3 coord = new Vector3();
+		coord.x = pos.x * terrain.terrainData.size.x;
+		coord.z = pos.y * terrain.terrainData.size.z;
+		return coord;
+	}
+
 	void updateMapHeights() {
 		// get the heights of the terrain under this game object
 		float[,] heights = terrain.terrainData.GetHeights(0 , 0, hmWidth, hmHeight);
@@ -146,18 +160,23 @@ public class TerrainBehaviour : MonoBehaviour {
 		for (int i=0; i < hmWidth; i++){
 			for (int j=0; j < hmHeight; j++){
 				rand = Random.Range(1f,10f);
-				heights[i,j] += Time.deltaTime / 50 / rand;
+				if (i < 5 || i > 250 || j < 5 || j > 250)
+					heights[i,j] = 0;
+				else
+					heights[i,j] += Time.deltaTime / 50 / rand;
 
 				// Si la position devant nous est celle de devant le joueur on grossit en fonction de la hauteur de neige
 				if (j == frontPlayer.x && i == frontPlayer.y) {
-					player.transform.localScale += new Vector3(1,1,1) * heights[i,j] / 30;
+					if (!player.GetComponent<PlayerController>().isStun())
+						player.transform.localScale += new Vector3(1,1,1) * heights[i,j] / 30;	
 					Vector3 position = new Vector3(player.transform.position.x, player.transform.localScale.y / 2, player.transform.position.z);
 					player.transform.position = position;
 				}
 
 				// Si la position devant nous est celle de devant l'IA on grossit en fonction de la hauteur de neige
 				if (j == frontAI.x && i == frontAI.y) {
-					IA.transform.localScale += new Vector3(1,1,1) * heights[i,j] / 30;
+					if (!IA.GetComponent<IAController>().isStun())
+						IA.transform.localScale += new Vector3(1,1,1) * heights[i,j] / 30;
 					Vector3 position = new Vector3(IA.transform.position.x, IA.transform.localScale.y / 2, IA.transform.position.z);
 					IA.transform.position = position;
 				}
@@ -189,5 +208,25 @@ public class TerrainBehaviour : MonoBehaviour {
 				heights[(int) pos.x, (int) pos.y] = 0;
 		}
 				
+	}
+
+	public  Vector3 getMaxHeightPos(){
+		Vector3 res = new Vector3();
+		posIA = toTerrainPos(IA.transform.position);
+		float[,] heights = terrain.terrainData.GetHeights(0 , 0, hmWidth, hmHeight);
+		float maxHeight = 0;
+		for (int i=0; i < hmWidth; i++){
+			for (int j=0; j < hmHeight; j++){
+				if (Mathf.Pow(j-posIA.x,2) + Mathf.Pow(i-posIA.y,2) < Mathf.Pow(50,2) || (Mathf.Pow(j-posIA.x,2) + Mathf.Pow(i-posIA.y,2) > Mathf.Pow(20,2))) {
+					if (heights[i,j] > maxHeight){
+						maxHeight = heights[i,j];
+						res.x = j;
+						res.y = i;
+					}
+				}
+			}
+		}
+		res = fromTerrainPos(res);
+		return res;
 	}
 }
