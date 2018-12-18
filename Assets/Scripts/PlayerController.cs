@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour {
     bool touchingZWall = false;
  
     void Update() {
+        // la taille du joueur augmente en continue donc son rayon est mis à jour à chaque frame
         radius = transform.localScale.x;
         if (!stun){
             forward = Vector3.ProjectOnPlane(mainCamera.transform.forward.normalized, Vector3.up);
@@ -74,6 +75,7 @@ public class PlayerController : MonoBehaviour {
             transform.localScale = newScale;
     }
 
+    // fonction qui réduit la taille de la boule si elle se trouve dans le rayon d'un météor
     void updateSize() {
         if (isMelting) {
             Vector3 newScale = transform.localScale - Vector3.one * 0.04f;
@@ -82,15 +84,17 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    // la vistesse de déplacement dépend de la taille
     void updateSpeed() {
         speed = 20f - transform.localScale.x;
     }
 
+    // on détecte les collisions
     void OnTriggerEnter(Collider col){
         if (col.tag == "Meteor"){
             isMelting = true;
         }
-        
+        // pour ne pas traverser les murs
         if (touchingXWall && touchingZWall) {
             movePlayer(-moveDirection);
         }

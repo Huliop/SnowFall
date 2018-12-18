@@ -25,11 +25,8 @@ public class ButtonController : MonoBehaviour {
 			exit.onClick.AddListener(exitOnClick);
 		}
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+	// les différentes actions à effectuer selon le bouton cliqué  
 
 	void playOnClick(){
 		changeScene("Map");

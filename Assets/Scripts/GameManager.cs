@@ -27,6 +27,7 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
+	// le game manager gère la fin de partie selon la taille des boules
 	public void gameOver(){
 		SceneManager.LoadScene("GameOverScene");
 	}

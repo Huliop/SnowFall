@@ -20,7 +20,7 @@ public class MeteorBehavior : MonoBehaviour {
 	}
 
 	void Start () {
-
+		// on ne calcul les coordonnées terrain du météor qu'à son apparition
 		listPos = new List<Vector2>();
 		done = false;
 		rb = GetComponent<Rigidbody>();
@@ -38,6 +38,7 @@ public class MeteorBehavior : MonoBehaviour {
 	}
 
 	void Update(){
+		// on fait tomber le météor du ciel
 		if(transform.position.y > 0){
 			transform.position = transform.position - new Vector3(0,16,0) * Time.deltaTime;
 		}
@@ -47,6 +48,7 @@ public class MeteorBehavior : MonoBehaviour {
 		}
 	}
 	
+	// fonction qui convertit les coordonnées world vers terrain
 	Vector3 toTerrainPos(Vector3 pos) {
 
 		// get the normalized position of the player relative to the terrain
@@ -77,6 +79,7 @@ public class MeteorBehavior : MonoBehaviour {
 	}
 
 	void OnDestroy(){
+		// si le météor se détruit alors qu'une boule est dans son rayon, on arrête de faire fondre la boule
 		if (collidingPlayer){
 			if (player.GetComponent<PlayerController>().melt()){
 				player.GetComponent<PlayerController>().meltOff();

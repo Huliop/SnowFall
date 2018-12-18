@@ -68,6 +68,7 @@ public class TerrainBehaviour : MonoBehaviour {
 		terrain.terrainData.SetHeightsDelayLOD(0, 0, heights);
 	}
 
+	// fonction qui gère le délai d'apparition des météors
 	void updateSpwanTime(){
 		if (Time.time > 30)
 			spawnTime = 5;
@@ -75,6 +76,7 @@ public class TerrainBehaviour : MonoBehaviour {
 			spawnTime = 2;
 	}
 
+	// fonction qui fait apparaître les météors à des positions aléatoires
 	void spawnMeteor(){
 		if (spawnCD < Time.time){
 			spawnCD = Time.time + spawnTime;
@@ -140,6 +142,7 @@ public class TerrainBehaviour : MonoBehaviour {
 		return pos;
 	}
 
+	// fonction qui convertit les coordonnées terrain vers world
 	Vector3 fromTerrainPos(Vector3 pos) {
 
 		pos.x = (float)pos.x / hmWidth;
@@ -210,6 +213,7 @@ public class TerrainBehaviour : MonoBehaviour {
 				
 	}
 
+	// fonction qui renvoie la position avec la hauteur de terrain la plus haute dans un certain rayon autour de la boule (distance min et distance max)
 	public  Vector3 getMaxHeightPos(){
 		Vector3 res = new Vector3();
 		posIA = toTerrainPos(IA.transform.position);
