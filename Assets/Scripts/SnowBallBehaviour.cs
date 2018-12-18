@@ -18,7 +18,7 @@ public class SnowBallBehaviour : MonoBehaviour {
 			// On le bouge
 			//Vector3.MoveTowards(objectHitPosition, new Vector3(100, objectHitPosition.y, 100), 100f);
 			//collision.gameObject.transform.Translate(knockBackDirNormalized * ballStrength);
-			Vector3 newPos = player.transform.position + knockBackDirNormalized * 5;
+			Vector3 newPos = player.transform.position + knockBackDirNormalized * 10;
 			newPos.x = Mathf.Clamp(newPos.x, 0 + player.transform.localScale.x, 100 - player.transform.localScale.x);
 			newPos.z = Mathf.Clamp(newPos.z, 0 + player.transform.localScale.x, 100 - player.transform.localScale.x);
 			player.GetComponent<Rigidbody>().MovePosition(newPos);
